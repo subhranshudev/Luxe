@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const ejs = require("ejs");
+const path = require("path");
 
 const Listing = require("./models/listing.js");
 
@@ -18,22 +19,54 @@ main()
     console.log(err);
   });
 
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.urlencoded({ extended: true }));  // when data is sent from frontend, by default it comes through url. 
+                                                  //  If we want to pass it through body this line is written
+
 app.get("/", (req, res) => {
   res.send("Welcome to Luxe!");
 });
 
-app.get("/testListing", async (req, res) => {
-  let sampleListing = new Listing({
-    title: "My new Villa",
-    description: "By the beach",
-    price: 1200,
-    location: "Calangute, Goa",
-    country: "India",
-  });
+// app.get("/testListing", async (req, res) => {
+//   let sampleListing = new Listing({
+//     title: "My new Villa",
+//     description: "By the beach",
+//     price: 1200,
+//     location: "Calangute, Goa",
+//     country: "India",
+//   });
 
-  await sampleListing.save();
-  console.log("Sample was saved");
-  res.send("Successful testing");
+//   await sampleListing.save();
+//   console.log("Sample was saved");
+//   res.send("Successful testing");
+// });
+
+// Index route
+app.get("/listings", async (req, res) => {
+  const allListings = await Listing.find({});
+  res.render("listings/index.ejs", { allListings });
+});
+
+// New route
+app.get("/listings/new", (req, res) => {
+  res.render("listings/new.ejs");
+});
+
+// Show route
+app.get("/listings/:id", async (req, res) => {
+  let { id } = req.params;
+  const listing = await Listing.findById(id);
+  res.render("listings/show.ejs", { listing });
+});
+
+// create route
+app.post("/listings", async (req, res) => {
+  let listing = req.body.listing;
+  // console.log(listing);
+  const newListing = new Listing(listing);
+  await newListing.save();
+  res.redirect("/listings");
 });
 
 const port = 8080;
