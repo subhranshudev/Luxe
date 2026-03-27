@@ -62,8 +62,8 @@
   margin-bottom: 2rem;
 }
 
-.card-image-top {
-  border-radius: 2rem !important;
+.card-img-top {
+  border-radius: 1rem !important;
   width: 100% !important;
   object-fit: cover !important;
 }
@@ -81,6 +81,7 @@
 }
 
 /* Card effect */
+
 .card-img-overlay{
   opacity: 0;
 }
@@ -92,7 +93,25 @@
 
  /* New page */
  
-.add-btn, .edit-btn{
+.add-btn{
+  background-color: #fe424d !important;
+  border: none !important;
+}
+
+/* Edit Page  */
+.edit-btn{
+  background-color: #fe424d !important;
+  border: none !important;
+}
+
+/* Show page  */
+
+.show-image{
+  height: 40vh;
+  border-radius: 0.3rem;
+}
+
+.delete-btn{
   background-color: #fe424d !important;
   border: none !important;
 }
