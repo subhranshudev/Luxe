@@ -7,6 +7,7 @@ const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
+const { listingSchema } = require("./schema.js");
 
 const Listing = require("./models/listing.js");
 const { wrap } = require("module");
@@ -51,6 +52,17 @@ app.get("/", (req, res) => {
 // });
 */
 
+const validateListing = (req, res, next) => {
+  let { error } = listingSchema.validate(req.body);
+  if (error) {
+    // console.log(error);
+    let errorMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(400, errorMsg);
+  } else {
+    next();
+  }
+};
+
 // Index route
 app.get(
   "/listings",
@@ -78,6 +90,7 @@ app.get(
 // create route
 app.post(
   "/listings",
+  validateListing,
   wrapAsync(async (req, res, next) => {
     let listing = req.body.listing;
     // console.log(listing);
@@ -103,6 +116,7 @@ app.get(
 // Update route
 app.put(
   "/listings/:id",
+  validateListing,
   wrapAsync(async (req, res) => {
     let { id } = req.params;
     let updatedListing = req.body.listing;
@@ -132,7 +146,7 @@ app.all("*splat", (req, res, next) => {
 
 app.use((err, req, res, next) => {
   let { statusCode = 500, message = "Something went wrong!" } = err;
-  res.render("error.ejs", {message});
+  res.status(statusCode).render("error.ejs", { message });
   // res.status(statusCode).send(message);
 });
 
