@@ -53,7 +53,7 @@ app.get("/", (req, res) => {
 */
 
 const validateListing = (req, res, next) => {
-  let { error } = listingSchema.validate(req.body);
+  let { error } = listingSchema.validate(req.body); // validation of req.body using Joi on the basis of listingSchema
   if (error) {
     // console.log(error);
     let errorMsg = error.details.map((el) => el.message).join(",");
@@ -140,11 +140,11 @@ app.delete(
   }),
 );
 
-app.all("*splat", (req, res, next) => {
+app.all("*splat", (req, res, next) => { // If the searched route doesnot matches with any of the route then it will match with this '*' route
   next(new ExpressError(404, "Page Not Found!"));
 });
 
-app.use((err, req, res, next) => {
+app.use((err, req, res, next) => {  // Global error handler
   let { statusCode = 500, message = "Something went wrong!" } = err;
   res.status(statusCode).render("error.ejs", { message });
   // res.status(statusCode).send(message);
