@@ -8,8 +8,10 @@ const ejsMate = require("ejs-mate");
 const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
 const { listingSchema } = require("./schema.js");
+const { reviewSchema } = require("./schema.js");
 
 const Listing = require("./models/listing.js");
+const Review = require("./models/review.js");
 const { wrap } = require("module");
 
 const MONGOURL = "mongodb://127.0.0.1:27017/wanderlust";
@@ -63,6 +65,16 @@ const validateListing = (req, res, next) => {
   }
 };
 
+const validateReview = (req, res, next) => {
+  let { error } = reviewSchema.validate(req.body);
+  if (error) {
+    let errorMsg = error.details.map((el) => el.message).join(",");
+    throw new ExpressError(400, errorMsg);
+  } else {
+    next();
+  }
+};
+
 // Index route
 app.get(
   "/listings",
@@ -82,7 +94,7 @@ app.get(
   "/listings/:id",
   wrapAsync(async (req, res) => {
     let { id } = req.params;
-    const listing = await Listing.findById(id);
+    const listing = await Listing.findById(id).populate("reviews");
     res.render("listings/show.ejs", { listing });
   }),
 );
@@ -140,11 +152,43 @@ app.delete(
   }),
 );
 
-app.all("*splat", (req, res, next) => { // If the searched route doesnot matches with any of the route then it will match with this '*' route
+// REVIEWS
+// POST route
+app.post(
+  "/listings/:id/reviews",
+  validateReview,
+  wrapAsync(async (req, res) => {
+    let listing = await Listing.findById(req.params.id);
+    let newReview = new Review(req.body.review);
+
+    listing.reviews.push(newReview);
+
+    await newReview.save();
+    await listing.save();
+    // console.log("New review saved;", newReview);
+    res.redirect(`/listings/${listing._id}`);
+  }),
+);
+
+// review Delete route
+app.delete(
+  "/listings/:id/reviews/:reviewId",
+  wrapAsync(async (req, res) => {
+    let { id, reviewId } = req.params;
+    await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewId}})
+    await Review.findByIdAndDelete(reviewId);
+
+    res.redirect(`/listings/${id}`);
+  }),
+);
+
+app.all("*splat", (req, res, next) => {
+  // If the searched route doesnot matches with any of the route then it will match with this '*' route
   next(new ExpressError(404, "Page Not Found!"));
 });
 
-app.use((err, req, res, next) => {  // Global error handler
+app.use((err, req, res, next) => {
+  // Global error handler
   let { statusCode = 500, message = "Something went wrong!" } = err;
   res.status(statusCode).render("error.ejs", { message });
   // res.status(statusCode).send(message);
