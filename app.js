@@ -1,20 +1,17 @@
 const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
-const ejs = require("ejs");
 const path = require("path");
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-const wrapAsync = require("./utils/wrapAsync.js");
 const ExpressError = require("./utils/ExpressError.js");
-const { listingSchema } = require("./schema.js");
-const { reviewSchema } = require("./schema.js");
-
-const Listing = require("./models/listing.js");
-const Review = require("./models/review.js");
 const { wrap } = require("module");
 
+const listings = require("./routes/listing.js");
+const reviews = require("./routes/review.js");
+
 const MONGOURL = "mongodb://127.0.0.1:27017/wanderlust";
+
 async function main() {
   await mongoose.connect(MONGOURL);
 }
@@ -54,133 +51,10 @@ app.get("/", (req, res) => {
 // });
 */
 
-const validateListing = (req, res, next) => {
-  let { error } = listingSchema.validate(req.body); // validation of req.body using Joi on the basis of listingSchema
-  if (error) {
-    // console.log(error);
-    let errorMsg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(400, errorMsg);
-  } else {
-    next();
-  }
-};
-
-const validateReview = (req, res, next) => {
-  let { error } = reviewSchema.validate(req.body);
-  if (error) {
-    let errorMsg = error.details.map((el) => el.message).join(",");
-    throw new ExpressError(400, errorMsg);
-  } else {
-    next();
-  }
-};
-
-// Index route
-app.get(
-  "/listings",
-  wrapAsync(async (req, res) => {
-    const allListings = await Listing.find({});
-    res.render("listings/index.ejs", { allListings });
-  }),
-);
-
-// New route
-app.get("/listings/new", (req, res) => {
-  res.render("listings/new.ejs");
-});
-
-// Show route
-app.get(
-  "/listings/:id",
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    const listing = await Listing.findById(id).populate("reviews");
-    res.render("listings/show.ejs", { listing });
-  }),
-);
-
-// create route
-app.post(
-  "/listings",
-  validateListing,
-  wrapAsync(async (req, res, next) => {
-    let listing = req.body.listing;
-    // console.log(listing);
-    if (!req.body.listing) {
-      throw new ExpressError(400, "Send valid data for listing");
-    }
-    const newListing = new Listing(listing);
-    await newListing.save();
-    res.redirect("/listings");
-  }),
-);
-
-// Edit route
-app.get(
-  "/listings/:id/edit",
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    let listing = await Listing.findById(id);
-    res.render("listings/edit.ejs", { listing });
-  }),
-);
-
-// Update route
-app.put(
-  "/listings/:id",
-  validateListing,
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    let updatedListing = req.body.listing;
-
-    if (!updatedListing) {
-      throw new ExpressError(400, "Send valid data for listing");
-    }
-    await Listing.findByIdAndUpdate(id, { ...updatedListing });
-    res.redirect(`/listings/${id}`);
-  }),
-);
-
-// Delete route
-app.delete(
-  "/listings/:id",
-  wrapAsync(async (req, res) => {
-    let { id } = req.params;
-    let deletedListing = await Listing.findByIdAndDelete(id);
-    // console.log(deletedListing);
-    res.redirect("/listings");
-  }),
-);
-
+// Listings
+app.use("/listings", listings);
 // REVIEWS
-// POST route
-app.post(
-  "/listings/:id/reviews",
-  validateReview,
-  wrapAsync(async (req, res) => {
-    let listing = await Listing.findById(req.params.id);
-    let newReview = new Review(req.body.review);
-
-    listing.reviews.push(newReview);
-
-    await newReview.save();
-    await listing.save();
-    // console.log("New review saved;", newReview);
-    res.redirect(`/listings/${listing._id}`);
-  }),
-);
-
-// review Delete route
-app.delete(
-  "/listings/:id/reviews/:reviewId",
-  wrapAsync(async (req, res) => {
-    let { id, reviewId } = req.params;
-    await Listing.findByIdAndUpdate(id, {$pull: {reviews: reviewId}})
-    await Review.findByIdAndDelete(reviewId);
-
-    res.redirect(`/listings/${id}`);
-  }),
-);
+app.use("/listings/:id/reviews", reviews);
 
 app.all("*splat", (req, res, next) => {
   // If the searched route doesnot matches with any of the route then it will match with this '*' route
