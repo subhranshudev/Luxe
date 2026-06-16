@@ -11,8 +11,9 @@ const passport = require("passport");
 const LocalStartegy = require("passport-local");
 const User = require("./models/user.js");
 
-const listings = require("./routes/listing.js");
-const reviews = require("./routes/review.js");
+const listingRouter = require("./routes/listing.js");
+const reviewRouter = require("./routes/review.js");
+const userRouter = require("./routes/user.js");
 
 const MONGOURL = "mongodb://127.0.0.1:27017/wanderlust";
 
@@ -56,7 +57,7 @@ app.use(flash());
 
 app.use(passport.initialize());
 app.use(passport.session());
-app.use(new LocalStartegy(User.authenticate()));
+passport.use(new LocalStartegy(User.authenticate()));
 
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
@@ -69,10 +70,22 @@ app.use((req, res, next) => {
   next();
 });
 
+// app.get("/demoUser", async (req, res) => {
+//   let fakeUser = new User({
+//     email: "sekhar@gmail.com",
+//     username: "sekhar",
+//   });
+
+//   let registeredUser = await User.register(fakeUser, "helloWorld");
+//   res.send(registeredUser);
+// });
+
 // Listings
-app.use("/listings", listings);
+app.use("/listings", listingRouter);
 // REVIEWS
-app.use("/listings/:id/reviews", reviews);
+app.use("/listings/:id/reviews", reviewRouter);
+// Users
+app.use("/", userRouter);
 
 app.all("*splat", (req, res, next) => {
   // If the searched route doesnot matches with any of the route then it will match with this '*' route
