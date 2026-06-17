@@ -65,20 +65,9 @@ passport.deserializeUser(User.deserializeUser());
 app.use((req, res, next) => {
   res.locals.success = req.flash("success");
   res.locals.error = req.flash("error");
-  // console.log(res.locals.success);
-  // console.log(res.locals.error);
+  res.locals.currUser = req.user;
   next();
 });
-
-// app.get("/demoUser", async (req, res) => {
-//   let fakeUser = new User({
-//     email: "sekhar@gmail.com",
-//     username: "sekhar",
-//   });
-
-//   let registeredUser = await User.register(fakeUser, "helloWorld");
-//   res.send(registeredUser);
-// });
 
 // Listings
 app.use("/listings", listingRouter);
