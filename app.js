@@ -94,6 +94,10 @@ app.post("/search", async (req, res) => {
   res.render("listings/index.ejs", { allListings });
 });
 
+app.get("/", (req, res) => {
+  res.redirect("/listings");
+});
+
 // Listings
 app.use("/listings", listingRouter);
 // REVIEWS
