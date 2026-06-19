@@ -21,6 +21,8 @@ router.route("/").get(wrapAsync(listingsController.index)).post(
 // New route
 router.get("/new", isLoggedIn, listingsController.renderNewForm);
 
+// Filter route
+router.get("/filters/:filter", wrapAsync(listingsController.filterListing));
 // Show route, Update route, Delete route
 router
   .route("/:id")

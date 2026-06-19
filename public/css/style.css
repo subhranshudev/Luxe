@@ -115,3 +115,24 @@ body {
   background-color: #fe424d !important;
   border: none !important;
 }
+
+.card-link{
+  text-decoration: none;
+  background-color: #fe424d;
+  color: #fff;
+  height: 2rem;
+  padding: 0.25rem 2rem 0.25rem 2rem;
+  border-radius: 10px;
+}
+
+.priceCard-body{
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+}
+
+#filters a{
+  text-decoration: none;
+  color: black;
+}
