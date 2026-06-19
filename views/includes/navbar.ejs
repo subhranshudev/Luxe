@@ -51,6 +51,10 @@
           <a class="nav-link" href="/login"><b>Login</b></a>
         <% }  %>
          <% if(currUser){ %>
+          <a class="nav-link" href="/profile/<%= currUser._id %>">
+            <i class="fa-solid fa-user"></i>
+            <!-- <div class="nav-avatar"><%= currUser.username.charAt(0).toUpperCase() %></div> -->
+          </a>
           <a class="nav-link" href="/logout"><b>Log Out</b></a>
        <%   } %>
       </div>

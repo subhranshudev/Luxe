@@ -42,3 +42,11 @@ module.exports.logout = (req, res, next) => {
     res.redirect("/listings");
   });
 };
+
+module.exports.showProfile = async (req, res) => {
+  let { id } = req.params;
+  let user = await User.findById(id);
+  console.log(user);
+  res.render("users/profile.ejs", { user });
+  // res.send("Your Profile");
+};

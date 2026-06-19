@@ -116,7 +116,7 @@ body {
   border: none !important;
 }
 
-.card-link{
+.card-link {
   text-decoration: none;
   background-color: #fe424d;
   color: #fff;
@@ -125,14 +125,14 @@ body {
   border-radius: 10px;
 }
 
-.priceCard-body{
+.priceCard-body {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
 }
 
-#filters a{
+#filters a {
   text-decoration: none;
   color: black;
 }
