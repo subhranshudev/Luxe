@@ -5,7 +5,7 @@ const Review = require("./models/review.js");
 
 module.exports.isLoggedIn = (req, res, next) => {
   if (!req.isAuthenticated()) {
-    console.log("originalUrl ->", req.originalUrl);
+    // console.log("originalUrl ->", req.originalUrl);
     req.session.redirectUrl = req.originalUrl;
     req.flash("error", "You must be logged in to perform this task");
     return res.redirect("/login");

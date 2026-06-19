@@ -31,6 +31,26 @@
       </div>
 
       <div class="mb-3">
+        <label for="description" class="form-label">Category</label>
+        <select name="listing[category]" class="form-control" required>
+          <option value="" disabled selected>Please select an option</option>
+          <option value="Trending" <%= listing.category === 'Trending' ? 'selected' : '' %>>Trending</option>
+          <option value="Rooms" <%= listing.category === 'Rooms' ? 'selected' : '' %>>Rooms</option>
+          <option value="IconicCities" <%= listing.category === 'IconicCities' ? 'selected' : '' %>>Iconic Cities</option>
+          <option value="Mountains" <%= listing.category === 'Mountains' ? 'selected' : '' %>>Mountains</option>
+          <option value="Castles" <%= listing.category === 'Castles' ? 'selected' : '' %>>Castles</option>
+          <option value="Arctic" <%= listing.category === 'Arctic' ? 'selected' : '' %>>Arctic</option>
+          <option value="Farms" <%= listing.category === 'Farms' ? 'selected' : '' %>>Farms</option>
+          <option value="Camping" <%= listing.category === 'Camping' ? 'selected' : '' %>>Camping</option>
+          <option value="Domes" <%= listing.category === 'Domes' ? 'selected' : '' %>>Domes</option>
+          <option value="Pool" <%= listing.category === 'Pool' ? 'selected' : '' %>>Pool</option>
+          <option value="Beach" <%= listing.category === 'Beach' ? 'selected' : '' %>>Beach</option>
+          <option value="Boats" <%= listing.category === 'Boats' ? 'selected' : '' %>>Boats</option>
+        </select>
+        <div class="invalid-feedback">Enter a valid category</div>
+      </div>
+
+      <div class="mb-3">
         Original Listing Image <br>
         <img src=<%= originalImageUrl %> alt="Original Image" height="200" width="400">
       </div>

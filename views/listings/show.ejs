@@ -2,7 +2,7 @@
 
 <div class="row">
   <div class="col-8 offset-2">
-    <h1><%= listing.title %></h1>
+    <h2><%= listing.title %></h2>
     <div class="listing-card">
       <img
         src="<%= listing.image.url %>"
@@ -15,11 +15,21 @@
           <p class="card-text"><i>Hosted by <%= listing.owner.username %></i></p>
           <p class="card-text"><%= listing.description %></p>
           <!-- <p class="card-text">&#8377;<%= listing.price.toLocaleString("en-IN") %> / night</p> -->
-          <p class="card-text"><i class="fa-solid fa-location-dot"></i> &nbsp; <%= listing.location %>, <%= listing.country %></p>
+          <p class="card-text"><i class="fa-solid fa-location-arrow"></i> &nbsp; <%= listing.location %>, <%= listing.country %></p>
+          <hr>
+          <div class="mb-2"><i class="fa-solid fa-door-closed"></i> &nbsp; <b>Self check-in</b>
+            <p>Check yourself in with the smartlock.</p>
+          </div>
+          <div class="mb-2"><i class="fa-solid fa-location-dot"></i> &nbsp; <b>Calm and convenient location</b>
+            <p>Guests say this area is peaceful and it’s easy to get around.</p>
+          </div>
+          <div class="mb-2"><i class="fa-solid fa-square-parking"></i> &nbsp; <b>Park for free</b>
+            <p>This is one of the few places in the area with free parking.</p>
+          </div>
         </div>
 
       
-        <div class="card col-md-4 mt-4 ml-2" style="width: 16rem;">
+        <div class="card col-md-4 mt-4 ml-2" style="width: 16rem; height: 7rem; box-shadow: 4px 4px 10px 2px rgba(0, 0, 0, 0.3);">
           <div class="priceCard-body mt-2">
             <h5 class="card-title">&#8377;<%= listing.price.toLocaleString("en-IN") %> / night</h5>
             <a href="#" class="card-link">Reserve</a>

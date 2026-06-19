@@ -53,10 +53,6 @@ const sessionOptions = {
   },
 };
 
-app.get("/", (req, res) => {
-  res.send("Welcome to Luxe!");
-});
-
 app.use(session(sessionOptions));
 app.use(flash());
 
@@ -76,6 +72,7 @@ app.use((req, res, next) => {
 
 app.post("/search", async (req, res) => {
   let { destination } = req.body;
+  destination = destination.trim();
   let allListings = await Listing.find({
     $or: [{ country: destination }, { location: destination }],
   });
@@ -99,7 +96,6 @@ app.use((err, req, res, next) => {
   // Global error handler
   let { statusCode = 500, message = "Something went wrong!" } = err;
   res.status(statusCode).render("error.ejs", { message });
-  // res.status(statusCode).send(message);
 });
 
 const port = 8080;
