@@ -14,6 +14,7 @@ const flash = require("connect-flash");
 const passport = require("passport");
 const LocalStartegy = require("passport-local");
 const User = require("./models/user.js");
+const Listing = require("./models/listing.js");
 
 const listingRouter = require("./routes/listing.js");
 const reviewRouter = require("./routes/review.js");
@@ -71,6 +72,15 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   res.locals.currUser = req.user;
   next();
+});
+
+app.post("/search", async (req, res) => {
+  let { destination } = req.body;
+  let allListings = await Listing.find({
+    $or: [{ country: destination }, { location: destination }],
+  });
+
+  res.render("listings/index.ejs", { allListings });
 });
 
 // Listings
